@@ -4,10 +4,11 @@ export const INITIAL_VENDORS: Vendor[] = [
   {
     id: '1',
     role: '婚禮主持',
-    name: 'Leo Wedding',
-    handle: 'leo_host_wedding',
-    url: 'https://www.instagram.com/leo_host_wedding',
-    imageUrl: 'https://picsum.photos/400/400?random=3',
+    name: '小豐',
+    handle: 'Bgg.Feng',
+    url: 'https://www.instagram.com/Bgg.Feng',
+    imageUrl: 'https://scontent.fkhh1-1.fna.fbcdn.net/v/t39.30808-6/472313105_1142259297417101_6741923655650414207_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=3a1ebe&_nc_ohc=VyETs_FcRGwQ7kNvwGf8J9D&_nc_oc=Adnlx22jp0qVXb_W1VN-1eXPx1DG3l8XOcQEOo_Jm-EpVvE0vgkyrtusK9wTRePZntA&_nc_zt=23&_nc_ht=scontent.fkhh1-1.fna&_nc_gid=xwn6yNZI_uie2wWPeWFt1g&oh=00_Afk9oe7nfHzdz2OpWlSH_Rj-dLfiykI7s5pZ7W6J8u12UQ&oe=69379DC8',
+    scale: 70,
   },
   {
     id: '2',
@@ -16,6 +17,7 @@ export const INITIAL_VENDORS: Vendor[] = [
     handle: 'aming_photo',
     url: 'https://www.instagram.com/aming_photo',
     imageUrl: 'https://picsum.photos/400/400?random=1',
+    scale: 70,
   },
   {
     id: '3',
@@ -24,6 +26,7 @@ export const INITIAL_VENDORS: Vendor[] = [
     handle: 'bella_style',
     url: 'https://www.instagram.com/bella_style',
     imageUrl: 'https://picsum.photos/400/400?random=2',
+    scale: 70,
   }
 ];
 

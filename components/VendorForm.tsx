@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Vendor } from '../types';
-import { Plus, Trash2, Instagram, Upload, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
+import { Plus, Trash2, Instagram, Upload, Image as ImageIcon, Link as LinkIcon, ZoomIn } from 'lucide-react';
 
 interface VendorFormProps {
   vendors: Vendor[];
@@ -18,17 +18,18 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
       role: '婚禮廠商',
       handle: '',
       url: 'https://instagram.com',
-      imageUrl: `https://picsum.photos/400/400?random=${Date.now()}`
+      imageUrl: `https://picsum.photos/400/400?random=${Date.now()}`,
+      scale: 70
     };
     setVendors([...vendors, newVendor]);
   };
 
-  const handleUpdate = (id: string, field: keyof Vendor, value: string) => {
+  const handleUpdate = (id: string, field: keyof Vendor, value: string | number) => {
     setVendors(vendors.map(v => {
       if (v.id !== id) return v;
 
       // Special logic for Instagram Handle
-      if (field === 'handle') {
+      if (field === 'handle' && typeof value === 'string') {
         const cleanHandle = value.replace('@', '').trim();
         const autoUrl = cleanHandle ? `https://www.instagram.com/${cleanHandle}` : 'https://instagram.com';
         
@@ -86,10 +87,10 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
       />
 
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-gray-800">廠商列表 ({vendors.length})</h2>
+        <h2 className="text-xl font-bold text-gray-800">廠商列表 (共 {vendors.length})</h2>
         <button 
           onClick={handleAddVendor}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm"
+          className="flex items-center gap-2 bg-[#B76E79] hover:bg-[#9e5d66] text-white px-4 py-2 rounded-lg text-sm transition shadow-sm"
         >
           <Plus size={16} /> 新增廠商
         </button>
@@ -97,8 +98,8 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
 
       <div className="flex-1 overflow-y-auto pr-2 space-y-4 pb-10">
         {vendors.map((vendor, index) => (
-          <div key={vendor.id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition relative group">
-            <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+          <div key={vendor.id} className="bg-white border border-[#B38867]/30 rounded-xl p-5 shadow-sm hover:shadow-md transition relative group">
+            <div className="flex justify-between items-center mb-4 border-b border-[#B38867]/20 pb-2">
               <span className="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded font-mono">#{index + 1}</span>
               <button onClick={() => handleRemove(vendor.id)} className="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-red-50 transition">
                 <Trash2 size={16} />
@@ -107,9 +108,9 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
             
             <div className="space-y-4">
               
-              {/* Primary Input: Instagram */}
-              <div className="bg-pink-50 p-3 rounded-lg border border-pink-100">
-                <label className="text-xs font-bold text-pink-600 mb-1 block flex items-center gap-1">
+              {/* Primary Input: Instagram - Updated to Dry Rose theme */}
+              <div className="bg-[#FAF0F0] p-3 rounded-lg border border-[#ECD9D9]">
+                <label className="text-xs font-bold text-[#B47474] mb-1 block flex items-center gap-1">
                   <Instagram size={14}/> 輸入 IG 帳號 (自動產生連結與名稱)
                 </label>
                 <div className="relative">
@@ -118,7 +119,7 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
                     value={vendor.handle}
                     onChange={(e) => handleUpdate(vendor.id, 'handle', e.target.value)}
                     placeholder="例如: wedding_photo_tw"
-                    className="w-full text-base font-medium border-b border-pink-200 bg-transparent py-1 pl-6 text-gray-800 placeholder-gray-400 focus:border-pink-500 outline-none transition"
+                    className="w-full text-base font-medium border-b border-[#ECD9D9] bg-transparent py-1 pl-6 text-gray-800 placeholder-gray-400 focus:border-[#B47474] outline-none transition"
                   />
                   <span className="absolute left-0 top-1 text-gray-400 font-medium">@</span>
                 </div>
@@ -132,7 +133,7 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
                     value={vendor.name}
                     onChange={(e) => handleUpdate(vendor.id, 'name', e.target.value)}
                     placeholder="自動帶入或自行修改"
-                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
                 <div>
@@ -141,7 +142,7 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
                     type="text" 
                     value={vendor.role}
                     onChange={(e) => handleUpdate(vendor.id, 'role', e.target.value)}
-                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
               </div>
@@ -149,14 +150,20 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
               {/* Image Handling */}
               <div className="pt-2 border-t border-gray-100">
                 <label className="text-xs text-gray-500 mb-2 block flex items-center gap-1">
-                  <ImageIcon size={12}/> 照片設定 (圓形頭貼)
+                  <ImageIcon size={12}/> 照片設定
                 </label>
                 <div className="flex gap-3 items-start">
-                  <img 
-                    src={vendor.imageUrl} 
-                    alt="Preview" 
-                    className="w-12 h-12 rounded-full object-cover border border-gray-200 bg-gray-100 shrink-0"
-                  />
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="overflow-hidden w-12 h-12 rounded-full border border-gray-200 bg-gray-100 shrink-0 relative">
+                        <img 
+                            src={vendor.imageUrl} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover"
+                            style={{ transform: `scale(${(vendor.scale || 70) / 50})` }}
+                        />
+                    </div>
+                  </div>
+                  
                   <div className="flex-1 space-y-2">
                     <div className="flex gap-2">
                       <button 
@@ -175,6 +182,20 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
                         className="w-full text-xs border rounded p-1.5 pl-7 bg-gray-50 text-gray-600 focus:bg-white outline-none"
                       />
                       <LinkIcon size={10} className="absolute left-2 top-2 text-gray-400"/>
+                    </div>
+                    
+                    {/* Scale Slider */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <ZoomIn size={12} className="text-gray-400" />
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="100" 
+                        value={vendor.scale || 70} 
+                        onChange={(e) => handleUpdate(vendor.id, 'scale', parseInt(e.target.value))}
+                        className="flex-1 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#B76E79]"
+                      />
+                      <span className="text-xs text-gray-500 font-mono w-8 text-right">{vendor.scale || 70}%</span>
                     </div>
                   </div>
                 </div>

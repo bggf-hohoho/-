@@ -31,6 +31,7 @@ export interface Vendor {
   handle: string;
   url: string;
   imageUrl?: string;
+  scale?: number; // 0-100, default 70 (1.4x)
 }
 
 export interface AppState {

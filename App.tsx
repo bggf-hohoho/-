@@ -89,30 +89,41 @@ const App: React.FC = () => {
           currentStyle={currentStyle}
         />
         {/* Floating Close Button for fullscreen - Shows on mouse move */}
+        {/* Reduced size by ~50%: p-3 -> p-1.5, size={28} -> size={14} */}
         <button 
            onClick={() => document.exitFullscreen().then(()=>setIsFullscreen(false))} 
-           className={`fixed top-6 right-6 bg-black/40 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-md transition-all duration-500 z-50 transform hover:scale-110 shadow-2xl border border-white/10 ${showControls ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}
+           className={`fixed top-6 right-6 bg-black/40 hover:bg-black/80 text-white p-1.5 rounded-full backdrop-blur-md transition-all duration-500 z-50 transform hover:scale-110 shadow-2xl border border-white/10 ${showControls ? 'opacity-50 hover:opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}
            title="退出全螢幕"
         >
-           <X size={28} />
+           <X size={14} />
         </button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] flex flex-col md:flex-row h-screen overflow-hidden">
+    <div className="min-h-screen bg-[#f3f4f6] flex flex-col md:flex-row h-screen overflow-hidden items-stretch">
       
       {/* Sidebar: Configuration */}
-      <div className="w-full md:w-[400px] bg-white border-r border-gray-200 flex flex-col h-full z-10 shadow-xl">
-        <div className="p-6 border-b border-gray-100 bg-gray-50">
-          <h1 className="text-2xl font-black text-gray-800 tracking-tight flex items-center gap-2">
-            <span className="text-blue-600">Wedding</span>Cards
-          </h1>
-          <div className="flex items-baseline gap-2 mt-1 flex-wrap">
-            <p className="text-sm text-gray-500">廠商名單產生器</p>
-            <p className="text-xs text-gray-400 font-medium">By 小豐aka喜劇受害人(@Bgg.Feng)</p>
-          </div>
+      <div className="w-full md:w-[400px] bg-[#F8F7F4] border-r border-[#E5E0D8] flex flex-col h-full z-10 shadow-xl">
+        {/* Header - Height matched to h-16 (64px) to align with right side */}
+        <div className="h-16 px-6 border-b border-[#E5E0D8] bg-[#F8F7F4] flex items-center shrink-0">
+           <div className="flex items-baseline gap-2 w-full overflow-hidden">
+             <h1 className="text-2xl font-black text-[#4A4036] tracking-tight flex items-center shrink-0">
+               <span className="text-[#B38867]">List</span>Deck
+             </h1>
+             <div className="flex items-baseline gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                <span className="text-sm text-[#786C5E] font-bold shrink-0">廠商名單產生器</span>
+                <a 
+                  href="https://www.instagram.com/bgg.feng/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-[#B38867]/70 hover:text-[#B38867] font-medium transition-colors truncate"
+                >
+                  By 小豐aka喜劇受害人(@Bgg.Feng)
+                </a>
+             </div>
+           </div>
         </div>
 
         <div className="flex-1 p-6 overflow-hidden">
@@ -137,12 +148,13 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button onClick={toggleFullscreen} className="flex items-center gap-1.5 text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+            <button onClick={toggleFullscreen} className="flex items-center gap-1.5 text-gray-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition">
               <Monitor size={16} />
               <span className="text-sm font-medium">預覽</span>
             </button>
             <button onClick={handleDownload} className="flex items-center gap-1.5 bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition shadow-lg shadow-gray-200/50">
-              <div className="w-5 h-5 rounded-full overflow-hidden border border-white/30">
+              {/* Removed border border-white/30 class */}
+              <div className="w-5 h-5 rounded-full overflow-hidden">
                 <AuthorImage className="w-full h-full" />
               </div>
               <span className="text-sm font-medium">輸出</span>
@@ -173,7 +185,7 @@ const App: React.FC = () => {
                  <button
                    key={key}
                    onClick={() => setCurrentStyle(key as StyleType)}
-                   className={`relative group flex-shrink-0 w-48 h-28 rounded-xl border-2 transition-all duration-300 overflow-hidden text-left p-4 flex flex-col justify-between ${currentStyle === key ? 'border-blue-500 ring-4 ring-blue-500/20 scale-105 shadow-xl' : 'border-gray-200 hover:border-blue-300 hover:shadow-md'}`}
+                   className={`relative group flex-shrink-0 w-48 h-28 rounded-xl border-2 transition-all duration-300 overflow-hidden text-left p-4 flex flex-col justify-between ${currentStyle === key ? 'border-indigo-500 ring-4 ring-indigo-500/20 scale-105 shadow-xl' : 'border-gray-200 hover:border-indigo-300 hover:shadow-md'}`}
                  >
                    {/* Mini Preview Mockups */}
                    <div className={`absolute inset-0 ${conf.bg}`}></div>
@@ -191,7 +203,7 @@ const App: React.FC = () => {
                          {conf.subLabel}
                        </span>
                      </div>
-                     {currentStyle === key && <CheckCircle size={18} className="text-blue-600 mb-1 drop-shadow-md" />}
+                     {currentStyle === key && <CheckCircle size={18} className="text-indigo-600 mb-1 drop-shadow-md" />}
                    </div>
                  </button>
                );
@@ -223,7 +235,7 @@ const App: React.FC = () => {
               {/* Section 1: About Author */}
               <div className="mb-6">
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1">
-                  <Info size={14} /> 關於作者
+                  <Info size={14} /> 關於作者 <span className="text-pink-500 ml-1">(歡迎追蹤)</span>
                 </h3>
                 <a 
                   href="https://www.instagram.com/bgg.feng/" 
