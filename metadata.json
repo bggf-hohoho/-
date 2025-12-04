@@ -1,0 +1,5 @@
+{
+  "name": "Wedding Vendor Card Generator (婚禮廠商卡片產生器)",
+  "description": "A tool to generate animated, production-ready 16:9 vendor profile cards for wedding receptions. Supports 5 distinct styles, QR code generation, and Traditional Chinese interface.",
+  "requestFramePermissions": []
+}
