@@ -47,6 +47,27 @@ export const generateStaticHTML = (vendors: Vendor[], style: StyleType): string 
     @media (min-width: 1200px) {
        .qr-img { width: ${count > 6 ? '60px' : (count === 1 ? '120px' : '80px')}; height: ${count > 6 ? '60px' : (count === 1 ? '120px' : '80px')}; }
     }
+    /* Fullscreen Button Style */
+    #fs-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, transform 0.2s;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+    #fs-btn:hover { background: rgba(0, 0, 0, 0.8); transform: scale(1.1); }
+    #fs-btn svg { width: 24px; height: 24px; fill: white; }
   `;
 
   let styleCSS = '';
@@ -151,14 +172,14 @@ export const generateStaticHTML = (vendors: Vendor[], style: StyleType): string 
     case StyleType.VINTAGE_POLAROID:
       styleCSS = `body { background: #E8E6E1; font-family: cursive; display: flex; justify-content: center; align-items: center; height: 100vh; }
       .container { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
-      .card { background: white; padding: 12px 12px 40px 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 240px; transform: rotate(-1deg); display: flex; flex-direction: column; align-items: center; }
+      .card { background: white; padding: 12px 12px 40px 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 240px; transform: rotate(-1deg); display: flex; flex-direction: column; align-items: flex-start; }
       .img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #eee; margin-bottom: 10px; filter: contrast(1.1); }
       h1 { font-size: 1.2rem; color: #333; margin: 0; }
       p { color: #666; font-size: 0.8rem; margin: 0; }
       .qr-wrap { position: absolute; bottom: -20px; right: -10px; transform: rotate(5deg); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
       `;
       contentHTML = renderCards((v, i) => `
-        <div style="transform: rotate(${i%2===0?2:-2}deg); width:100%; text-align:center;">
+        <div style="transform: rotate(${i%2===0?2:-2}deg); width:100%; text-align:left;">
         <img src="${v.imageUrl}" class="img" />
         <h1>${v.name}</h1>
         <p>${v.role}</p>
@@ -233,7 +254,21 @@ export const generateStaticHTML = (vendors: Vendor[], style: StyleType): string 
     </style>
 </head>
 <body>
+    <button id="fs-btn" onclick="toggleFullScreen()" title="全螢幕/退出全螢幕">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+    </button>
     ${contentHTML}
+    <script>
+      function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+    </script>
 </body>
 </html>
   `.trim();

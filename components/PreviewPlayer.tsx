@@ -199,13 +199,13 @@ const PreviewPlayerComponent: React.FC<PreviewPlayerProps> = ({
             initial={{ opacity: 0, rotate: 0 }}
             animate={{ opacity: 1, rotate: (i % 2 === 0 ? 2 : -2) + (Math.random() * 2 - 1) }}
             whileHover={{ scale: 1.1, rotate: 0, zIndex: 10 }}
-            className="bg-white p-3 pb-8 shadow-lg flex flex-col items-center transition-all duration-300 w-[240px]"
+            className="bg-white p-3 pb-8 shadow-lg flex flex-col items-start transition-all duration-300 w-[240px]"
           >
             <div className="w-full aspect-square bg-gray-100 mb-3 overflow-hidden">
                 <img src={vendor.imageUrl} className="w-full h-full object-cover filter contrast-110" />
             </div>
-            <h1 className="font-handwriting text-gray-700 font-bold transform -rotate-1 truncate w-full text-center text-lg font-comic">{vendor.name}</h1>
-            <p className="text-gray-400 text-xs mt-1 font-mono">{vendor.role}</p>
+            <h1 className="font-handwriting text-gray-700 font-bold transform -rotate-1 truncate w-full text-left text-lg font-comic">{vendor.name}</h1>
+            <p className="text-gray-400 text-xs mt-1 font-mono text-left">{vendor.role}</p>
             <div className="absolute -bottom-6 -right-4 transform rotate-6">
                <QRWrapper size={layout.qrSize * 0.8} url={vendor.url} />
             </div>

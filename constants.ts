@@ -28,13 +28,6 @@ export const INITIAL_VENDORS: Vendor[] = [
 ];
 
 export const STYLE_CONFIG = {
-  [StyleType.ELEGANT_MINIMAL]: {
-    label: '優雅極簡',
-    subLabel: 'Elegant Minimal',
-    bg: 'bg-[#f8f5f2]',
-    text: 'text-[#4a4a4a]',
-    accent: 'text-[#8b7355]',
-  },
   [StyleType.PLAYFUL_POP]: {
     label: '活潑撞色',
     subLabel: 'Playful Pop',
@@ -42,13 +35,33 @@ export const STYLE_CONFIG = {
     text: 'text-[#2d3436]',
     accent: 'text-[#d63031]',
   },
-  // Moved to 3rd position and renamed from Anime Manga to Vintage Magazine
-  [StyleType.ANIME_MANGA]: {
-    label: '復古雜誌',
-    subLabel: 'Vintage Magazine',
-    bg: 'bg-[#fff]',
+  [StyleType.WABI_SABI]: {
+    label: '侘寂美學',
+    subLabel: 'Wabi-Sabi',
+    bg: 'bg-[#D6C6B0]',
+    text: 'text-[#4A4036]',
+    accent: 'text-[#786C5E]',
+  },
+  [StyleType.BOHO_CHIC]: {
+    label: '波西米亞',
+    subLabel: 'Boho Chic',
+    bg: 'bg-[#E6D0C3]',
+    text: 'text-[#5D4037]',
+    accent: 'text-[#A16E5C]',
+  },
+  [StyleType.VINTAGE_POLAROID]: {
+    label: '復古拍立得',
+    subLabel: 'Vintage Polaroid',
+    bg: 'bg-[#E8E6E1]',
+    text: 'text-[#333333]',
+    accent: 'text-[#555555]',
+  },
+  [StyleType.COMIC_POP]: {
+    label: '美式畫風',
+    subLabel: 'Comic Pop',
+    bg: 'bg-[#FFEB3B]',
     text: 'text-black',
-    accent: 'text-[#ff0000]',
+    accent: 'text-[#F44336]',
   },
   [StyleType.MODERN_GRID]: {
     label: '現代網格',
@@ -64,6 +77,13 @@ export const STYLE_CONFIG = {
     text: 'text-[#2F3E32]',
     accent: 'text-[#4A6741]',
   },
+  [StyleType.ELEGANT_MINIMAL]: {
+    label: '優雅極簡',
+    subLabel: 'Elegant Minimal',
+    bg: 'bg-[#f8f5f2]',
+    text: 'text-[#4a4a4a]',
+    accent: 'text-[#8b7355]',
+  },
   [StyleType.LUXURY_MARBLE]: {
     label: '奢華大理石',
     subLabel: 'Luxury Marble',
@@ -71,12 +91,12 @@ export const STYLE_CONFIG = {
     text: 'text-[#111111]',
     accent: 'text-[#D4AF37]',
   },
-  [StyleType.VINTAGE_POLAROID]: {
-    label: '復古拍立得',
-    subLabel: 'Vintage Polaroid',
-    bg: 'bg-[#E8E6E1]',
-    text: 'text-[#333333]',
-    accent: 'text-[#555555]',
+  [StyleType.ANIME_MANGA]: {
+    label: '復古雜誌',
+    subLabel: 'Vintage Magazine',
+    bg: 'bg-[#fff]',
+    text: 'text-black',
+    accent: 'text-[#ff0000]',
   },
   [StyleType.JAPANESE_ZEN]: {
     label: '日式禪風',
@@ -84,13 +104,6 @@ export const STYLE_CONFIG = {
     bg: 'bg-[#F5F1E8]',
     text: 'text-[#2C2C2C]',
     accent: 'text-[#8E354A]',
-  },
-  [StyleType.BOHO_CHIC]: {
-    label: '波西米亞',
-    subLabel: 'Boho Chic',
-    bg: 'bg-[#E6D0C3]',
-    text: 'text-[#5D4037]',
-    accent: 'text-[#A16E5C]',
   },
   [StyleType.CYBER_NEON]: {
     label: '賽博霓虹',
@@ -105,13 +118,6 @@ export const STYLE_CONFIG = {
     bg: 'bg-[#1a1a1a]',
     text: 'text-[#E0AA3E]',
     accent: 'text-[#F7E7CE]',
-  },
-  [StyleType.COMIC_POP]: {
-    label: '美式漫畫',
-    subLabel: 'Comic Pop',
-    bg: 'bg-[#FFEB3B]',
-    text: 'text-black',
-    accent: 'text-[#F44336]',
   },
   [StyleType.WATERCOLOR_DREAM]: {
     label: '夢幻水彩',
@@ -154,13 +160,6 @@ export const STYLE_CONFIG = {
     bg: 'bg-[#E8EEF2]',
     text: 'text-[#3E4E59]',
     accent: 'text-[#8DA9C4]',
-  },
-  [StyleType.WABI_SABI]: {
-    label: '侘寂美學',
-    subLabel: 'Wabi-Sabi',
-    bg: 'bg-[#D6C6B0]',
-    text: 'text-[#4A4036]',
-    accent: 'text-[#786C5E]',
   },
   [StyleType.JAPANESE_TRADITIONAL]: {
     label: '和風傳統',
