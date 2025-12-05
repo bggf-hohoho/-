@@ -188,7 +188,7 @@ const App: React.FC = () => {
              rel="noopener noreferrer"
              className="text-[10px] text-[#B38867]/70 hover:text-[#B38867] font-medium transition-colors truncate mt-0.5"
            >
-             By 小豐aka喜劇受害人(@Bgg.Feng)
+             By 小豐｜婚禮主持aka喜劇受害人(@Bgg.Feng)
            </a>
         </div>
 
@@ -308,9 +308,9 @@ const App: React.FC = () => {
                   <Info size={14} /> 關於作者
                 </h3>
                 <p className="text-xs mb-3 font-medium leading-relaxed text-[#333333]">
-                  這工具幫您省下婚禮籌備時間了嗎？<br/>
-                  <span className="font-bold text-[#B76E79]">按個追蹤</span>，就是對小豐<span className="font-bold text-[#B76E79]">最大的鼓勵</span>，支持網站持續優化🥹<br/>
-                  也能搶先獲得更多新點子❤️❤️❤️
+                  這網站不騙你的錢，不騙你的感情，只圖你一個IG追蹤🥹<br/>
+                  希望這個工具，為你帶來一點<span className="font-bold text-[#B76E79]">【時間救贖】</span>。<br/>
+                  <span className="font-bold text-[#B76E79]">按個追蹤</span>，支持網站持續優化，也能搶先獲得更多新點子❤️
                 </p>
                 <a 
                   href="https://www.instagram.com/bgg.feng/" 
@@ -322,7 +322,7 @@ const App: React.FC = () => {
                      <AuthorImage className="w-full h-full" />
                   </div>
                   <div>
-                     <h4 className="font-bold text-[#333333]">小豐aka喜劇受害人</h4>
+                     <h4 className="font-bold text-[#333333]">小豐｜婚禮主持aka喜劇受害人</h4>
                      <p className="text-xs text-[#B76E79] font-medium mt-0.5">@Bgg.Feng</p>
                      <p className="text-[10px] text-gray-400 mt-1">Instagram 婚禮主持 / 喜劇演員</p>
                   </div>

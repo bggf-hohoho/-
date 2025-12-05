@@ -461,7 +461,7 @@ const PreviewPlayerComponent: React.FC<PreviewPlayerProps> = ({
         className="absolute bottom-3 left-0 right-0 text-center text-[10px] font-sans font-medium opacity-40 hover:opacity-100 transition-opacity z-50 mix-blend-difference text-white"
         style={{ textShadow: '0 0 2px rgba(0,0,0,0.2)' }}
       >
-        AI Studio & Code By 小豐 aka 喜劇受害人 (@Bgg.Feng)
+        AI Studio & Code By 小豐｜婚禮主持aka喜劇受害人 (@Bgg.Feng)
       </a>
     </div>
   );
