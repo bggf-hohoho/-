@@ -334,7 +334,7 @@ const App: React.FC = () => {
                 <h3 className="text-xs font-bold text-[#FF6F61] uppercase tracking-wider mb-3 flex items-center gap-1">
                   <FileText size={14} /> 更新日誌（請勿點選）
                 </h3>
-                <div className="bg-gray-50 rounded-xl p-4 border border-[#EAEAEA] h-40 overflow-y-auto">
+                <div className="bg-gray-50 rounded-xl p-4 border border-[#EAEAEA] h-48 overflow-y-auto">
                    <div className="space-y-3">
                      <a 
                        href="https://www.youtube.com/shorts/h9T8Z3vHZuk" 
