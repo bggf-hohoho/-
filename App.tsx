@@ -8,7 +8,7 @@ import { PreviewPlayer } from './components/PreviewPlayer';
 import { VendorForm } from './components/VendorForm';
 import { INITIAL_VENDORS, STYLE_CONFIG } from './constants';
 import { StyleType, Vendor } from './types';
-import { generateStaticHTML } from './utils/exportUtils';
+import { downloadAsImage } from './utils/exportUtils';
 
 // Extracted constant for consistency across the app
 const AUTHOR_AVATAR_URL = "https://scontent.fkhh1-1.fna.fbcdn.net/v/t1.6435-9/92353989_125022249140816_578947242015064064_n.png?stp=dst-jpg_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=lYJE8QVKis8Q7kNvwFcDCWo&_nc_oc=AdkkxB6569c0j3TIEhussHKobD9EK1mDQW85k63Ug7NCDl0vKyJPSyJGKBm3az2cybQ&_nc_zt=23&_nc_ht=scontent.fkhh1-1.fna&_nc_gid=E4kk_110p3hfBwqjmmyBpw&oh=00_Aflc_zddTxrfwq3tQlmtBp_Thp-dL4ACShM_ytb4WDuKhA&oe=69593C46";
@@ -20,7 +20,11 @@ const App: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [showMoreModal, setShowMoreModal] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showQR, setShowQR] = useState(true);
+  
   const controlsTimeoutRef = useRef<number | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // Helper to cycle styles in fullscreen
   const styleKeys = Object.keys(STYLE_CONFIG) as StyleType[];
@@ -56,10 +60,10 @@ const App: React.FC = () => {
       setShowControls(true);
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
       
-      // Hide after 3 seconds of inactivity
+      // Hide after 0.75 seconds of inactivity (reduced from 1500ms)
       controlsTimeoutRef.current = window.setTimeout(() => {
         setShowControls(false);
-      }, 3000);
+      }, 750);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -72,18 +76,20 @@ const App: React.FC = () => {
     };
   }, [isFullscreen]);
 
-  const handleDownload = () => {
-    // Generate an HTML file for ALL vendors
-    const htmlContent = generateStaticHTML(vendors, currentStyle);
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `vendor-card-list-${currentStyle}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const handleDownload = async () => {
+    if (!previewRef.current || isExporting) return;
+    
+    setIsExporting(true);
+    try {
+      // Small delay to ensure any rendering updates (if any) are done
+      await new Promise(resolve => setTimeout(resolve, 50));
+      await downloadAsImage(previewRef.current, `ListDeck_${currentStyle}_${Date.now()}`);
+    } catch (error) {
+      console.error(error);
+      alert('圖片輸出失敗，請確認圖片網址是否允許跨域存取 (CORS) 或網路連線正常。');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const AuthorImage = ({ className }: { className?: string }) => (
@@ -99,19 +105,38 @@ const App: React.FC = () => {
   if (isFullscreen) {
     return (
       <div className="w-screen h-screen bg-black group relative overflow-hidden cursor-none hover:cursor-default">
-        <PreviewPlayer 
-          vendors={vendors}
-          currentStyle={currentStyle}
-        />
-        {/* Floating Close Button for fullscreen - Shows on mouse move */}
-        {/* Reduced size by ~50%: p-3 -> p-1.5, size={28} -> size={14} */}
-        <button 
-           onClick={() => document.exitFullscreen().then(()=>setIsFullscreen(false))} 
-           className={`fixed top-6 right-6 bg-black/40 hover:bg-black/80 text-white p-1.5 rounded-full backdrop-blur-md transition-all duration-500 z-50 transform hover:scale-110 shadow-2xl border border-white/10 ${showControls ? 'opacity-50 hover:opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}
-           title="退出全螢幕"
-        >
-           <X size={14} />
-        </button>
+        {/* Wrapper for capture - Attached ref here for fullscreen export */}
+        <div ref={previewRef} className="w-full h-full bg-black">
+          <PreviewPlayer 
+            vendors={vendors}
+            currentStyle={currentStyle}
+            showQR={showQR}
+          />
+        </div>
+
+        {/* Top Right Controls Group */}
+        <div className={`fixed top-6 right-6 flex items-center gap-3 transition-all duration-500 z-50 ${showControls ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}>
+           
+           {/* Export Button - Moved from main view */}
+           <button 
+             onClick={(e) => { e.stopPropagation(); handleDownload(); }}
+             disabled={isExporting}
+             className={`flex items-center gap-2 bg-black/40 hover:bg-black/80 text-white px-4 py-2 rounded-lg backdrop-blur-md border border-white/10 shadow-lg hover:scale-105 transition-all active:scale-95 ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+           >
+              <div className="w-5 h-5 rounded-full overflow-hidden">
+                <AuthorImage className="w-full h-full" />
+              </div>
+              <span className="text-sm font-medium">{isExporting ? '處理中...' : '輸出'}</span>
+           </button>
+
+           {/* Return Button - Replaced X icon with text */}
+           <button 
+             onClick={() => document.exitFullscreen().then(()=>setIsFullscreen(false))} 
+             className="bg-black/40 hover:bg-black/80 text-white px-4 py-2 rounded-lg backdrop-blur-md border border-white/10 shadow-lg hover:scale-105 transition-all active:scale-95 text-sm font-medium"
+           >
+              返回
+           </button>
+        </div>
 
         {/* Style Navigation Controls (Bottom Center) */}
         <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 transition-all duration-500 z-50 ${showControls ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
@@ -150,7 +175,7 @@ const App: React.FC = () => {
              <h1 className="text-2xl font-black text-[#4A4036] tracking-tight flex items-center shrink-0">
                <span className="text-[#B38867]">List</span>Deck
              </h1>
-             <span className="text-sm text-[#786C5E] font-bold shrink-0">廠商名單產生器</span>
+             <span className="text-sm text-[#786C5E] font-bold shrink-0">名單生產器</span>
            </div>
            <a 
              href="https://www.instagram.com/bgg.feng/" 
@@ -163,7 +188,12 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex-1 p-6 overflow-hidden">
-          <VendorForm vendors={vendors} setVendors={setVendors} />
+          <VendorForm 
+            vendors={vendors} 
+            setVendors={setVendors}
+            showQR={showQR}
+            setShowQR={setShowQR}
+          />
         </div>
       </div>
 
@@ -186,22 +216,21 @@ const App: React.FC = () => {
               <Monitor size={16} />
               <span className="text-sm font-medium">預覽</span>
             </button>
-            <button onClick={handleDownload} className="flex items-center gap-1.5 bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition shadow-lg shadow-gray-200/50">
-              {/* Removed border border-white/30 class */}
-              <div className="w-5 h-5 rounded-full overflow-hidden">
-                <AuthorImage className="w-full h-full" />
-              </div>
-              <span className="text-sm font-medium">輸出</span>
-            </button>
+            
+            {/* Export button removed from here as per requirements */}
           </div>
         </div>
 
         {/* Preview Canvas */}
         <div className="flex-1 bg-gray-200 flex items-center justify-center p-8 overflow-hidden">
-          <div className="w-full max-w-6xl aspect-video bg-white shadow-2xl rounded-sm overflow-hidden border border-gray-300 ring-4 ring-white relative group">
+          <div 
+            ref={previewRef}
+            className="w-full max-w-6xl aspect-video bg-white shadow-2xl rounded-sm overflow-hidden border border-gray-300 ring-4 ring-white relative group"
+          >
              <PreviewPlayer 
                vendors={vendors}
                currentStyle={currentStyle}
+               showQR={showQR}
              />
           </div>
         </div>
@@ -298,15 +327,15 @@ const App: React.FC = () => {
                      <div className="flex gap-3 items-start">
                         <span className="text-[10px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded shrink-0 mt-0.5">NEW</span>
                         <div className="text-xs text-gray-600">
-                          <p className="font-medium text-gray-800">風格更新</p>
-                          新增 侘寂美學、波西米亞、復古拍立得 等多款設計模板。
+                          <p className="font-medium text-gray-800">介面更新</p>
+                          輸出按鈕移至預覽全螢幕模式，優化操作體驗。
                         </div>
                      </div>
                      <div className="flex gap-3 items-start">
-                        <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded shrink-0 mt-0.5">FIX</span>
+                        <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded shrink-0 mt-0.5">UPDATE</span>
                         <div className="text-xs text-gray-600">
-                          <p className="font-medium text-gray-800">QR Code 優化</p>
-                          修正部分深色模式下 QR Code 掃描不易的問題，並增加輸出解析度。
+                          <p className="font-medium text-gray-800">風格更新</p>
+                          新增 侘寂美學、波西米亞、復古拍立得 等多款設計模板。
                         </div>
                      </div>
                      <div className="flex gap-3 items-start">

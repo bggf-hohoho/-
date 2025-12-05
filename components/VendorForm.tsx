@@ -1,13 +1,15 @@
 import React, { useRef } from 'react';
 import { Vendor } from '../types';
-import { Plus, Trash2, Instagram, Upload, Image as ImageIcon, Link as LinkIcon, ZoomIn } from 'lucide-react';
+import { Plus, Trash2, Instagram, Upload, Image as ImageIcon, Link as LinkIcon, ZoomIn, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, QrCode } from 'lucide-react';
 
 interface VendorFormProps {
   vendors: Vendor[];
   setVendors: (vendors: Vendor[]) => void;
+  showQR: boolean;
+  setShowQR: (show: boolean) => void;
 }
 
-export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) => {
+export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors, showQR, setShowQR }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const activeVendorIdRef = useRef<string | null>(null);
 
@@ -19,7 +21,9 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
       handle: '',
       url: 'https://instagram.com',
       imageUrl: `https://picsum.photos/400/400?random=${Date.now()}`,
-      scale: 50
+      scale: 50,
+      offsetX: 0,
+      offsetY: 0
     };
     setVendors([...vendors, newVendor]);
   };
@@ -75,6 +79,17 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
     }
   };
 
+  const handleMove = (id: string, dx: number, dy: number) => {
+    setVendors(vendors.map(v => {
+      if (v.id !== id) return v;
+      return {
+        ...v,
+        offsetX: (v.offsetX || 0) + dx,
+        offsetY: (v.offsetY || 0) + dy
+      };
+    }));
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Hidden File Input */}
@@ -87,13 +102,23 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
       />
 
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-gray-800">廠商列表 (共 {vendors.length})</h2>
-        <button 
-          onClick={handleAddVendor}
-          className="flex items-center gap-2 bg-[#B76E79] hover:bg-[#9e5d66] text-white px-4 py-2 rounded-lg text-sm transition shadow-sm"
-        >
-          <Plus size={16} /> 新增廠商
-        </button>
+        <h2 className="text-xl font-bold text-gray-800">名單列表 (共 {vendors.length})</h2>
+        <div className="flex gap-2">
+            <button
+                onClick={() => setShowQR(!showQR)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition shadow-sm border ${showQR ? 'bg-[#B76E79] border-[#B76E79] text-white hover:bg-[#9e5d66]' : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+                title={showQR ? '點擊隱藏 QR Code' : '點擊顯示 QR Code'}
+            >
+                <QrCode size={16} />
+                <span className="hidden sm:inline">{showQR ? 'QR On' : 'QR Off'}</span>
+            </button>
+            <button 
+              onClick={handleAddVendor}
+              className="flex items-center gap-1 bg-[#B76E79] hover:bg-[#9e5d66] text-white px-4 py-2 rounded-lg text-sm transition shadow-sm"
+            >
+              <Plus size={14} /> 新增名單
+            </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto pr-2 space-y-4 pb-10">
@@ -134,22 +159,24 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
               </div>
 
               <div className="grid grid-cols-2 gap-3">
+                {/* Role Input (Left) - Renamed Label */}
                 <div>
-                  <label className="text-xs text-gray-500 mb-1 block">廠商名稱 (Name)</label>
+                  <label className="text-xs text-gray-500 mb-1 block">一級文字</label>
+                  <input 
+                    type="text" 
+                    value={vendor.role}
+                    onChange={(e) => handleUpdate(vendor.id, 'role', e.target.value)}
+                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                  />
+                </div>
+                {/* Name Input (Right) - Renamed Label */}
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">二級文字</label>
                   <input 
                     type="text" 
                     value={vendor.name}
                     onChange={(e) => handleUpdate(vendor.id, 'name', e.target.value)}
                     placeholder="自動帶入或自行修改"
-                    className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 mb-1 block">類別 (Role)</label>
-                  <input 
-                    type="text" 
-                    value={vendor.role}
-                    onChange={(e) => handleUpdate(vendor.id, 'role', e.target.value)}
                     className="w-full text-sm border rounded p-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
@@ -167,8 +194,27 @@ export const VendorForm: React.FC<VendorFormProps> = ({ vendors, setVendors }) =
                             src={vendor.imageUrl} 
                             alt="Preview" 
                             className="w-full h-full object-cover"
-                            style={{ transform: `scale(${(vendor.scale || 50) / 50})` }}
+                            style={{ 
+                              transform: `translate(${vendor.offsetX || 0}px, ${vendor.offsetY || 0}px) scale(${(vendor.scale || 50) / 50})`
+                            }}
                         />
+                    </div>
+                    {/* Position Controls */}
+                    <div className="flex flex-col items-center gap-1 mt-1">
+                       <button onClick={() => handleMove(vendor.id, 0, -10)} className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition" title="上移">
+                         <ArrowUp size={12} />
+                       </button>
+                       <div className="flex gap-1">
+                          <button onClick={() => handleMove(vendor.id, -10, 0)} className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition" title="左移">
+                            <ArrowLeft size={12} />
+                          </button>
+                          <button onClick={() => handleMove(vendor.id, 0, 10)} className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition" title="下移">
+                            <ArrowDown size={12} />
+                          </button>
+                          <button onClick={() => handleMove(vendor.id, 10, 0)} className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition" title="右移">
+                            <ArrowRight size={12} />
+                          </button>
+                       </div>
                     </div>
                   </div>
                   

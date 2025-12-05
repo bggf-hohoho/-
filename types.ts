@@ -23,6 +23,8 @@ export interface Vendor {
   url: string;
   imageUrl?: string;
   scale?: number; // 0-100, default 50 (1x)
+  offsetX?: number; // pixels, default 0
+  offsetY?: number; // pixels, default 0
 }
 
 export interface AppState {
